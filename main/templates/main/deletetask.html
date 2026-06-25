@@ -1,0 +1,12 @@
+<h1> Удаление задачи </h1>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <h1> {{ task.title }} </h1>
+
+
+    <button> Удалить </button>
+
+</form>

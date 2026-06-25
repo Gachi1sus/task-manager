@@ -1,0 +1,11 @@
+<h1> Редактирование задачи </h1>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {{ form }}
+
+    <button> Редактировать </button>
+
+</form>

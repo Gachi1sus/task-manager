@@ -1,0 +1,13 @@
+
+<h1> Задачи: </h1>
+
+<h2>{{ task.title }}</h2>
+<h3>{{ task.description }}</h3>
+<h3>{{ task.status }}</h3>
+<h3>{{ task.created_at }}</h3>
+
+<a href='{% url 'deletetask' task.id %}' class="btn"> Удалить </a>
+
+<a href='{% url 'updatetask' task.id %}' class="btn"> Редактировать </a>
+
+<a href='{% url tasks %}' class="btn" > Обратно </a>

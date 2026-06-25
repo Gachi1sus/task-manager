@@ -1,0 +1,29 @@
+
+
+<form method="GET">
+    <input type="text" name="q" placeholder="Поиск задачи">
+    <button type="submit">Найти</button>
+</form>
+
+
+<h1> Задачи: </h1>
+{% for task in tasks %}
+    <h2>{{ task.title }}</h2>
+    <h3>{{ task.description }}</h3>
+    <h3>{{ task.status }}</h3>
+    <h3>{{ task.created_at }}</h3>
+
+    <a href='task/{{task.id}}/' class="btn"> Подробнее </a>
+
+{% endfor %}
+
+<h1></h1>
+<a href='{% url 'addtask' %}' class="btn"> Создать задачу </a>
+<a href="{% url 'tasks' %}">Все</a>
+<a href="{% url 'tasks' %}?status=new">Новые</a>
+<a href="{% url 'tasks' %}?status=in_progress">В работе</a>
+<a href="{% url 'tasks' %}?status=done">Выполненные</a>
+<h1></h1>
+<a href="?sort=title">По названию</a>
+<a href="?sort=created_at">Сначала старые</a>
+<a href="?sort=-created_at">Сначала новые</a>
