@@ -3,6 +3,8 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'created_at']
+        fields = ['id', 'owner', 'title', 'description', 'status', 'created_at']

@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
+
 
 class Task(models.Model):
     STATUS_CHOICES = [
@@ -7,6 +10,7 @@ class Task(models.Model):
         ('done', 'Выполнена'),
     ]
 
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     status =  models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
