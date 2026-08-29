@@ -10,7 +10,7 @@ class Task(models.Model):
         ('done', 'Выполнена'),
     ]
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='tasks')
     title = models.CharField(max_length=100)
     description = models.TextField()
     status =  models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
@@ -18,3 +18,9 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='profile')
+    avatar = models.ImageField(upload_to='avatars/',blank=True)
+
