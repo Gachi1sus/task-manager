@@ -30,7 +30,7 @@ class TaskViewSet(ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        return Task.objects.filter(owner=self.request.user)
+        return Task.objects.filter(owner=self.request.user).select_related('owner')
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -46,8 +46,6 @@ class MeView(RetrieveUpdateDestroyAPIView):
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        print("DATA:", request.data)
-        print("FILES:", request.FILES)
         return super().update(request, *args, **kwargs)
 
 
