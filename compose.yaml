@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:18
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql
     environment:
@@ -9,6 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   web:
     build: .
+    restart: unless-stopped
     depends_on:
       - db
     environment:
@@ -22,6 +24,7 @@ services:
       - static_data:/app/staticfiles
   nginx:
     image: nginx:alpine
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
