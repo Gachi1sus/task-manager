@@ -245,16 +245,13 @@ Run the following commands from the repository root.
 
 ### 1. Configure environment variables
 
-Create a local `.env` file:
+Copy the local environment template:
 
-```dotenv
-POSTGRES_DB=task_manager
-POSTGRES_USER=task_manager
-POSTGRES_PASSWORD=replace-with-a-local-database-password
-DJANGO_SECRET_KEY=replace-with-a-random-local-secret
-DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+```bash
+cp .env.example .env
 ```
+
+In your local `.env`, replace the placeholder values for `POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY` with a local database password and a random secret key.
 
 The `.env` file is ignored by Git.
 
@@ -320,6 +317,8 @@ docker compose down
 ## Environment Variables
 
 Compose reads `.env` and passes the configured variables into the containers. Django reads its settings from the container environment.
+
+The `.env.example` file contains all required variables with local development values and safe placeholders for secrets.
 
 | Variable | Purpose | Default |
 |---|---|---|
