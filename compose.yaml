@@ -20,6 +20,7 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_DEBUG: ${DJANGO_DEBUG}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     volumes:
       - static_data:/app/staticfiles
       - media_data:/app/media
