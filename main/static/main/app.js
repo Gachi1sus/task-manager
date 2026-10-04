@@ -112,6 +112,7 @@ function setAuthMode(register) {
   $('auth-title').textContent = register ? 'Регистрация' : 'Вход';
   $('auth-submit').textContent = register ? 'Создать аккаунт' : 'Войти';
   $('email-field').hidden = !register;
+  $('auth-email').disabled = !register;
   $('auth-email').required = register;
   $('auth-password').autocomplete = register ? 'new-password' : 'current-password';
   $('show-login').setAttribute('aria-pressed', String(!register));
@@ -260,7 +261,7 @@ async function loadTasks() {
     $('tasks').setAttribute('aria-busy', 'false');
     renderTasks();
     $('list-message').textContent = tasks.length ? `Найдено задач: ${data.count}` : 'Задач пока нет. Создайте задачу или измените условия поиска.';
-    $('pagination').hidden = !tasks.length;
+    $('pagination').hidden = !(data.next || data.previous);
     $('previous').disabled = !data.previous;
     $('next').disabled = !data.next;
     $('page-label').textContent = `Страница ${page}`;

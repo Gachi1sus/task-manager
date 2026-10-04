@@ -1,40 +1,117 @@
 {% load static %}
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Task Manager — мои задачи</title>
-  <link rel="stylesheet" href="{% static 'main/app.css' %}">
-  <script src="{% static 'main/app.js' %}" defer></script>
-</head>
-<body>
-  <header class="header"><a class="brand" href="/app/">Task Manager<span>Личный список задач</span></a><div class="header-actions"><a href="/api/docs/">API-документация</a><div id="account" hidden><span id="username"></span><button id="logout" class="secondary">Выйти</button></div></div></header>
-  <main>
-    <section id="auth" class="auth panel" aria-labelledby="auth-title">
-      <p class="eyebrow">ВАШЕ РАБОЧЕЕ ПРОСТРАНСТВО</p><h1 id="auth-title">Вход</h1><p class="muted">Соберите задачи в одном месте и двигайтесь шаг за шагом.</p>
-      <div class="tabs"><button id="show-login" class="secondary" aria-pressed="true">Вход</button><button id="show-register" class="secondary" aria-pressed="false">Регистрация</button></div>
-      <p id="auth-notice" role="status"></p>
-      <form id="auth-form">
-        <label for="auth-username">Имя пользователя</label><input id="auth-username" name="username" required maxlength="150" autocomplete="username" aria-describedby="auth-username-error"><span id="auth-username-error" class="field-error"></span>
-        <div id="email-field" hidden><label for="auth-email">Email</label><input id="auth-email" name="email" type="email" autocomplete="email" aria-describedby="auth-email-error"><span id="auth-email-error" class="field-error"></span></div>
-        <label for="auth-password">Пароль</label><input id="auth-password" name="password" type="password" required autocomplete="current-password" aria-describedby="auth-password-error"><span id="auth-password-error" class="field-error"></span>
-        <p id="auth-error" class="error" role="alert"></p><button id="auth-submit" class="primary" type="submit">Войти</button>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Manager — мои задачи</title>
+    <link rel="stylesheet" href="{% static 'main/app.css' %}">
+    <script src="{% static 'main/app.js' %}" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <a class="brand" href="/app/">
+        Task Manager
+        <span>Личный список задач</span>
+      </a>
+      <div class="header-actions">
+        <a href="/api/docs/">API-документация</a>
+        <div id="account" hidden>
+          <span id="username"></span>
+          <button id="logout" class="secondary">Выйти</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section id="auth" class="auth panel" aria-labelledby="auth-title">
+        <h1 id="auth-title">Вход</h1>
+        <p class="muted">Войдите или создайте аккаунт для работы с задачами</p>
+        <div class="tabs">
+          <button id="show-login" class="secondary" aria-pressed="true">Вход</button>
+          <button id="show-register" class="secondary" aria-pressed="false">Регистрация</button>
+        </div>
+        <p id="auth-notice" role="status"></p>
+        <form id="auth-form">
+          <label for="auth-username">Имя пользователя</label>
+          <input id="auth-username" name="username" required maxlength="150" autocomplete="username" aria-describedby="auth-username-error">
+          <span id="auth-username-error" class="field-error"></span>
+          <div id="email-field" hidden>
+            <label for="auth-email">Email</label>
+            <input id="auth-email" name="email" disabled type="email" autocomplete="email" aria-describedby="auth-email-error">
+            <span id="auth-email-error" class="field-error"></span>
+          </div>
+          <label for="auth-password">Пароль</label>
+          <input id="auth-password" name="password" type="password" required autocomplete="current-password" aria-describedby="auth-password-error">
+          <span id="auth-password-error" class="field-error"></span>
+          <p id="auth-error" class="error" role="alert"></p>
+          <button id="auth-submit" class="primary" type="submit">Войти</button>
+        </form>
+      </section>
+      <section id="workspace" hidden aria-labelledby="tasks-title">
+        <div class="section-heading">
+          <div>
+            <h1 id="tasks-title">Мои задачи</h1>
+          </div>
+          <button id="create-task" class="primary">+ Новая задача</button>
+        </div>
+        <form id="filters" class="filters panel">
+          <div>
+            <label for="search">Поиск</label>
+            <input id="search" type="search" placeholder="Название или описание">
+          </div>
+          <div>
+            <label for="filter-status">Статус</label>
+            <select id="filter-status">
+              <option value="">Все статусы</option>
+              <option value="new">Новая</option>
+              <option value="in_progress">В работе</option>
+              <option value="done">Выполнена</option>
+            </select>
+          </div>
+          <div>
+            <label for="ordering">Дата создания</label>
+            <select id="ordering">
+              <option value="-created_at">Сначала новые</option>
+              <option value="created_at">Сначала старые</option>
+            </select>
+          </div>
+          <button class="secondary" type="submit">Найти</button>
+        </form>
+        <p id="list-message" role="status" aria-live="polite"></p>
+        <button id="retry-list" class="secondary" hidden>Повторить загрузку</button>
+        <div id="tasks" class="tasks" aria-busy="false"></div>
+        <nav id="pagination" class="pagination" aria-label="Страницы задач" hidden>
+          <button id="previous" class="secondary">← Назад</button>
+          <span id="page-label"></span>
+          <button id="next" class="secondary">Далее →</button>
+        </nav>
+      </section>
+    </main>
+    <dialog id="task-dialog" aria-labelledby="dialog-title">
+      <form id="task-form">
+        <div class="section-heading">
+          <h2 id="dialog-title">Новая задача</h2>
+          <button id="close-dialog" type="button" class="secondary" aria-label="Закрыть диалог">✕</button>
+        </div>
+        <label for="task-title">Название</label>
+        <input id="task-title" name="title" required maxlength="100" aria-describedby="task-title-error">
+        <span id="task-title-error" class="field-error"></span>
+        <label for="task-description">Описание</label>
+        <textarea id="task-description" name="description" required rows="5" aria-describedby="task-description-error"></textarea>
+        <span id="task-description-error" class="field-error"></span>
+        <label for="task-status">Статус</label>
+        <select id="task-status" name="status" aria-describedby="task-status-error">
+          <option value="new">Новая</option>
+          <option value="in_progress">В работе</option>
+          <option value="done">Выполнена</option>
+        </select>
+        <span id="task-status-error" class="field-error"></span>
+        <p id="task-error" class="error" role="alert"></p>
+        <div class="dialog-actions">
+          <button id="cancel-task" class="secondary" type="button">Отмена</button>
+          <button id="save-task" class="primary" type="submit">Сохранить</button>
+        </div>
       </form>
-    </section>
-    <section id="workspace" hidden aria-labelledby="tasks-title">
-      <div class="section-heading"><div><p class="eyebrow">ЛИЧНОЕ ПРОСТРАНСТВО</p><h1 id="tasks-title">Мои задачи</h1><p class="muted">От идеи до результата — в вашем темпе.</p></div><button id="create-task" class="primary">+ Новая задача</button></div>
-      <form id="filters" class="filters panel"><div><label for="search">Поиск</label><input id="search" type="search" placeholder="Название или описание"></div><div><label for="filter-status">Статус</label><select id="filter-status"><option value="">Все статусы</option><option value="new">Новая</option><option value="in_progress">В работе</option><option value="done">Выполнена</option></select></div><div><label for="ordering">Дата создания</label><select id="ordering"><option value="-created_at">Сначала новые</option><option value="created_at">Сначала старые</option></select></div><button class="secondary" type="submit">Найти</button></form>
-      <p id="list-message" role="status" aria-live="polite"></p><button id="retry-list" class="secondary" hidden>Повторить загрузку</button>
-      <div id="tasks" class="tasks" aria-busy="false"></div>
-      <nav id="pagination" class="pagination" aria-label="Страницы задач" hidden><button id="previous" class="secondary">← Назад</button><span id="page-label"></span><button id="next" class="secondary">Далее →</button></nav>
-    </section>
-  </main>
-  <dialog id="task-dialog" aria-labelledby="dialog-title"><form id="task-form"><div class="section-heading"><h2 id="dialog-title">Новая задача</h2><button id="close-dialog" type="button" class="secondary" aria-label="Закрыть диалог">✕</button></div>
-    <label for="task-title">Название</label><input id="task-title" name="title" required maxlength="100" aria-describedby="task-title-error"><span id="task-title-error" class="field-error"></span>
-    <label for="task-description">Описание</label><textarea id="task-description" name="description" required rows="5" aria-describedby="task-description-error"></textarea><span id="task-description-error" class="field-error"></span>
-    <label for="task-status">Статус</label><select id="task-status" name="status" aria-describedby="task-status-error"><option value="new">Новая</option><option value="in_progress">В работе</option><option value="done">Выполнена</option></select><span id="task-status-error" class="field-error"></span>
-    <p id="task-error" class="error" role="alert"></p><div class="dialog-actions"><button id="cancel-task" class="secondary" type="button">Отмена</button><button id="save-task" class="primary" type="submit">Сохранить</button></div>
-  </form></dialog>
-</body>
+    </dialog>
+  </body>
 </html>

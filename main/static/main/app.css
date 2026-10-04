@@ -30,7 +30,7 @@ button {
 }
 button:disabled {
   opacity:.5;
-  cursor:wait;
+  cursor:default;
 }
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible {
   outline:3px solid #93b7ff;
@@ -81,6 +81,9 @@ h1 {
   font-size:32px;
   letter-spacing:-1px;
   margin:0 0 8px;
+}
+#tasks-title {
+  margin:0;
 }
 h2 {
   margin:0;
